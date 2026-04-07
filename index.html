@@ -474,7 +474,7 @@ function renderTable(list){
     '<td>'+travelPill(d.TravelDates)+'</td>'+
     '</tr>';
   }
-  document.getElementById('deskTbl').innerHTML='<div class="TW"><div class="TS"><table><thead><tr><th>Name</th><th>Market</th><th>Campaign</th><th>Status</th><th>Tier</th><th class="nc">Followers</th><th class="nc">Talent Cost</th><th class="nc">Prov. Travel</th><th>Credibility</th><th class="nc">Proj. EMV</th><th>ROAS</th><th>Visit</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  document.getElementById('deskTbl').innerHTML='<div class="TW"><div class="TS"><table><thead><tr><th>Name</th><th>Market</th><th>Campaign</th><th>Status</th><th>Tier</th><th class="nc">Followers</th><th class="nc">Talent Cost</th><th class="nc">Travel Cost</th><th>Credibility</th><th class="nc">Proj. EMV</th><th>ROAS</th><th>Visit</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
 function renderCards(list){
@@ -486,7 +486,7 @@ function renderCards(list){
     var rc=roas!=='--'?(parseFloat(roas)>=5?'#34d399':parseFloat(roas)>=2?'#fbbf24':'#f87171'):'#5a6278';
     html+='<div class="mc">'+
     '<div class="mc-top">'+mkAv(d.Name,d.CampaygnId,true)+'<div class="mc-nwrap"><div class="mc-name">'+esc(d.Name)+'</div>'+mkSoc(d,true)+'</div>'+stBadge(d.Status)+'</div>'+
-    '<div class="mc-summary"><div class="mc-stat"><div class="mc-stat-val">'+(fol?fn(fol):'--')+'</div><div class="mc-stat-lbl">Followers</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#a78bfa">'+fm(d.Cost)+'</div><div class="mc-stat-lbl">Talent Cost</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#8b5cf6">'+fm(d.ProvCost)+'</div><div class="mc-stat-lbl">Prov. Travel</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:'+rc+'">'+roas+(roas!=='--'?'x':'')+'</div><div class="mc-stat-lbl">ROAS</div></div></div>'+
+    '<div class="mc-summary"><div class="mc-stat"><div class="mc-stat-val">'+(fol?fn(fol):'--')+'</div><div class="mc-stat-lbl">Followers</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#a78bfa">'+fm(d.Cost)+'</div><div class="mc-stat-lbl">Talent Cost</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#8b5cf6">'+fm(d.ProvCost)+'</div><div class="mc-stat-lbl">Travel Cost</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:'+rc+'">'+roas+(roas!=='--'?'x':'')+'</div><div class="mc-stat-lbl">ROAS</div></div></div>'+
     '<div class="mc-detail"><div class="mc-grid">'+
     '<div class="mc-item"><div class="mc-label">Campaign</div><div class="mc-val">'+esc(d.Campaign||'--')+'</div></div>'+
     '<div class="mc-item"><div class="mc-label">Market</div><div class="mc-val">'+flag(d.Market)+' '+esc(d.Market)+'</div></div>'+
@@ -847,7 +847,7 @@ async function exportPPT(){
         {l:'FOLLOWERS',v:fol?fn(fol):'--',c:TX,fs:12},
         {l:'CREDIBILITY',v:cred?Math.round(cred).toString():'--',c:credCol,fs:12},
         {l:'TALENT COST',v:fm(d.Cost),c:PU,fs:11},
-        {l:'PROV. TRAVEL',v:fm(d.ProvCost),c:'8B5CF6',fs:11},
+        {l:'TRAVEL COST',v:fm(d.ProvCost),c:'8B5CF6',fs:11},
         {l:'EMV',v:fm(d.EMV),c:GN,fs:12},
         {l:'VISIT',v:travel==='--'?'--':travel,c:travel==='--'?MUT:'C084FC',fs:9}
       ];
