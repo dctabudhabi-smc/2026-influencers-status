@@ -183,7 +183,7 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 @keyframes spin{to{transform:rotate(360deg)}}
 .lo-txt{margin-top:14px;color:#8891a5;font-size:13px}
 
-@media(max-width:1200px){.CG{grid-template-columns:1fr}}
+@media(max-width:1200px){.CG{grid-template-columns:1fr}.col-tier{display:none}}
 @media(max-width:1100px){
 .mob-cards{display:block}.desk-tbl{display:none}
 }
@@ -488,17 +488,17 @@ function renderTable(list){
     '<td>'+flag(d.Market)+' '+esc(d.Market)+'</td>'+
     '<td>'+esc(d.Campaign)+'</td>'+
     '<td>'+stBadge(d.Status)+'</td>'+
-    '<td><span class="tb">'+esc(d.Tier||'--')+'</span></td>'+
+    '<td class="col-tier"><span class="tb">'+esc(d.Tier||'--')+'</span></td>'+
     '<td class="nc">'+(fol?fn(fol):'--')+'</td>'+
     '<td class="nc">'+fm(d.Cost)+'</td>'+
     '<td class="nc">'+fm(d.ProvCost)+'</td>'+
     '<td>'+crCell(d.Cred)+'</td>'+
     '<td class="nc" style="color:#34d399">'+fm(d.EMV)+'</td>'+
-    '<td style="color:'+rc+'">'+roas+(roas!=='--'?'x':'')+'</td>'+
+    '<td style="color:'+rc+';font-weight:700">'+roas+(roas!=='--'?'x':'')+'</td>'+
     '<td>'+travelPill(d.TravelDates)+'</td>'+
     '</tr>';
   }
-  document.getElementById('deskTbl').innerHTML='<div class="TW"><div class="TS"><table><thead><tr><th>Name</th><th>Market</th><th>Campaign</th><th>Status</th><th>Tier</th><th class="nc">Followers</th><th class="nc">Talent Cost</th><th class="nc">Travel Cost</th><th>Credibility</th><th class="nc">Proj. EMV</th><th>ROI</th><th>Visit</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  document.getElementById('deskTbl').innerHTML='<div class="TW"><div class="TS"><table><thead><tr><th>Name</th><th>Market</th><th>Campaign</th><th>Status</th><th class="col-tier">Tier</th><th class="nc">Followers</th><th class="nc">Talent Cost</th><th class="nc">Travel Cost</th><th>Credibility</th><th class="nc">EMV</th><th>ROI</th><th>Visit</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
 function renderCards(list){
@@ -516,7 +516,7 @@ function renderCards(list){
     '<div class="mc-item"><div class="mc-label">Market</div><div class="mc-val">'+flag(d.Market)+' '+esc(d.Market)+'</div></div>'+
     '<div class="mc-item"><div class="mc-label">Tier</div><div class="mc-val">'+esc(d.Tier||'--')+'</div></div>'+
     '<div class="mc-item"><div class="mc-label">Credibility</div><div class="mc-val">'+crCell(d.Cred)+'</div></div>'+
-    '<div class="mc-item"><div class="mc-label">Proj. EMV</div><div class="mc-val" style="color:#34d399">'+fm(d.EMV)+'</div></div>'+
+    '<div class="mc-item"><div class="mc-label">EMV</div><div class="mc-val" style="color:#34d399">'+fm(d.EMV)+'</div></div>'+
     '<div class="mc-item"><div class="mc-label">Visit</div><div class="mc-val">'+travelPill(d.TravelDates)+'</div></div>'+
     '</div></div>'+
     '<div class="mc-toggle" onclick="togMc(this)"><span class="mc-tgl-txt"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><path d="M6 9l6 6 6-6"/></svg></div></div>';
