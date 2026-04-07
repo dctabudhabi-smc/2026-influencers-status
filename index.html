@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
 <meta name="robots" content="noindex, nofollow, noarchive, nosnippet, noimageindex">
 <meta name="googlebot" content="noindex, nofollow, noarchive, nosnippet">
 <meta name="description" content="2026 Influencer Casting Dashboard - DCT Abu Dhabi SM&C. Live tracking of influencer campaigns, status pipeline, and market distribution.">
@@ -19,7 +19,7 @@
 <title>2026 - Influencer Casting | DCT Abu Dhabi SM&C</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
-body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#0a0c10;color:#e8ecf4;min-height:100vh;-webkit-font-smoothing:antialiased}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:#0a0c10;color:#e8ecf4;min-height:100vh;-webkit-font-smoothing:antialiased;color-scheme:dark}
 a{color:#3ecfb4;text-decoration:none}
 ::-webkit-scrollbar{width:5px;height:5px}::-webkit-scrollbar-track{background:#12151c}::-webkit-scrollbar-thumb{background:#2e364a;border-radius:3px}
 
@@ -42,17 +42,19 @@ a{color:#3ecfb4;text-decoration:none}
 .fg label{display:block;font-size:10px;text-transform:uppercase;letter-spacing:.7px;color:#5a6278;margin-bottom:4px;font-weight:500}
 .fg select{width:100%;background:#161a24;color:#e8ecf4;border:1px solid #252b3b;border-radius:6px;padding:7px 28px 7px 10px;font-size:12px;font-family:inherit;appearance:none;cursor:pointer;outline:none;transition:border-color .2s}
 .fg select:focus,.fg input:focus{border-color:#3ecfb4}
-.fg::after{content:’\25BE’;position:absolute;right:10px;bottom:10px;color:#5a6278;font-size:10px;pointer-events:none}
+.fg::after{content:'\25BE';position:absolute;right:10px;bottom:10px;color:#5a6278;font-size:10px;pointer-events:none}
 .fg.fg-date::after{display:none}
 .fg.fg-ms::after{display:none}
-.fg input[type=“date”]{width:100%;background:#161a24;color:#e8ecf4;border:1px solid #252b3b;border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s;color-scheme:dark}
+.fg input[type="date"]{width:100%;background:#161a24 !important;color:#e8ecf4 !important;border:1px solid #252b3b;border-radius:6px;padding:7px 10px;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s;color-scheme:dark;-webkit-appearance:none;-moz-appearance:none;appearance:none}
+.fg input[type="date"]::-webkit-date-and-time-value{text-align:left;color:#e8ecf4}
+.fg input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:0.5;cursor:pointer}
 .date-row{display:flex;gap:6px}
 .date-row input{flex:1;min-width:0}
 .frst{align-self:flex-end;background:#161a24;color:#8891a5;border:1px solid #252b3b;border-radius:6px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
 .frst:hover{background:#1e2332;color:#e8ecf4}
 .ms-wrap{position:relative}
 .ms-btn{width:100%;background:#161a24;color:#e8ecf4;border:1px solid #252b3b;border-radius:6px;padding:7px 28px 7px 10px;font-size:12px;font-family:inherit;cursor:pointer;text-align:left;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;outline:none;transition:border-color .2s;position:relative}
-.ms-btn::after{content:’\25BE’;position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#5a6278;font-size:10px}
+.ms-btn::after{content:'\25BE';position:absolute;right:10px;top:50%;transform:translateY(-50%);color:#5a6278;font-size:10px}
 .ms-btn:focus{border-color:#3ecfb4}
 .ms-drop{display:none;position:absolute;top:100%;left:0;right:0;background:#161a24;border:1px solid #252b3b;border-radius:6px;margin-top:4px;max-height:220px;overflow-y:auto;z-index:200;padding:6px 0}
 .ms-drop.open{display:block}
@@ -68,7 +70,7 @@ a{color:#3ecfb4;text-decoration:none}
 /* KPIs */
 .KG{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:24px}
 .KC{background:#161a24;border:1px solid #252b3b;border-radius:10px;padding:16px 18px;position:relative;overflow:hidden}
-.KC::before{content:’’;position:absolute;top:0;left:0;right:0;height:3px}
+.KC::before{content:'';position:absolute;top:0;left:0;right:0;height:3px}
 .KC:nth-child(1)::before{background:#3ecfb4}.KC:nth-child(2)::before{background:#34d399}.KC:nth-child(3)::before{background:#60a5fa}.KC:nth-child(4)::before{background:#fbbf24}.KC:nth-child(5)::before{background:#a78bfa}.KC:nth-child(6)::before{background:#f472b6}.KC:nth-child(7)::before{background:#fb923c}
 .KL{font-size:11px;font-weight:500;color:#8891a5;text-transform:uppercase;letter-spacing:.7px;margin-bottom:8px}
 .KV{font-size:24px;font-weight:700;letter-spacing:-.3px}
@@ -170,8 +172,8 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 .mc-toggle:hover{color:#8891a5}
 .mc-toggle svg{width:12px;height:12px;transition:transform .3s}
 .mc.open .mc-toggle svg{transform:rotate(180deg)}
-.mc.open .mc-tgl-txt::after{content:‘Less’}
-.mc:not(.open) .mc-tgl-txt::after{content:‘More details’}
+.mc.open .mc-tgl-txt::after{content:'Less'}
+.mc:not(.open) .mc-tgl-txt::after{content:'More details'}
 
 /* Footer */
 .FT{text-align:center;padding:20px;font-size:11px;color:#5a6278;border-top:1px solid #252b3b;margin-top:32px}
@@ -198,9 +200,7 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 }
 @media(max-width:480px){.fg{flex:1 1 100%}.mc-grid{grid-template-columns:1fr 1fr}.KG{grid-template-columns:1fr 1fr}.donut-wrap{flex-direction:column;align-items:center}}
 </style>
-
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
-
 </head>
 <body>
 <div class="lo" id="loader"><div class="spinner"></div><div class="lo-txt">Loading influencer data...</div></div>
@@ -969,6 +969,5 @@ async function exportPPT(mode){
 }
 
 </script>
-
 </body>
 </html>
