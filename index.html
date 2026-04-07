@@ -90,10 +90,13 @@ a{color:#3ecfb4;text-decoration:none}
 .mb-fill{height:100%;border-radius:4px;display:flex;align-items:center;padding-left:8px;font-size:10px;font-weight:600;color:#e8ecf4;min-width:28px}
 .mb-pct{width:34px;font-size:10px;color:#5a6278;text-align:right;flex-shrink:0}
 .mb-wrap{display:flex;flex-direction:column;flex:1}
-.SR{display:flex;align-items:center;gap:10px}
-.SL{font-size:12px;color:#8891a5;width:130px;text-align:right;flex-shrink:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.ST{flex:1;height:24px;background:#0a0c10;border-radius:5px;overflow:hidden}
-.SF{height:100%;border-radius:5px;display:flex;align-items:center;padding:0 8px;font-size:11px;font-weight:700;color:#0a0c10;min-width:fit-content}
+.donut-wrap{display:flex;align-items:center;gap:20px;flex:1}
+.donut-legend{display:flex;flex-direction:column;gap:4px;flex:1;overflow-y:auto}
+.dl-row{display:flex;align-items:center;gap:8px;font-size:11px}
+.dl-dot{width:8px;height:8px;border-radius:2px;flex-shrink:0}
+.dl-name{color:#8891a5;flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dl-count{color:#e8ecf4;font-weight:600;width:28px;text-align:right}
+.dl-pct{color:#5a6278;width:30px;text-align:right;font-size:10px}
 .SC{font-size:12px;font-weight:700;width:28px;text-align:right;flex-shrink:0}
 
 /* Directory controls */
@@ -192,7 +195,7 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 .mc-grid{grid-template-columns:1fr 1fr 1fr}
 
 }
-@media(max-width:480px){.fg{flex:1 1 100%}.mc-grid{grid-template-columns:1fr 1fr}.KG{grid-template-columns:1fr 1fr}}
+@media(max-width:480px){.fg{flex:1 1 100%}.mc-grid{grid-template-columns:1fr 1fr}.KG{grid-template-columns:1fr 1fr}.donut-wrap{flex-direction:column;align-items:center}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js"></script>
 </head>
@@ -441,17 +444,34 @@ function renderCharts(list){
 
   var mChart='<div class="CC"><div class="CT"><span class="CDT" style="background:#3ecfb4"></span> Market Distribution <span style="color:#5a6278;font-weight:400;font-size:11px;margin-left:auto">'+me.length+' markets - '+total+' total</span></div><div class="mb-wrap">'+mbars+'</div></div>';
 
-  // Pipeline
+  // Pipeline donut
   var sc={};list.forEach(function(d){var s=d.Status||'Unknown';sc[s]=(sc[s]||0)+1});
   var se=Object.entries(sc).sort(function(a,b){return b[1]-a[1]});
-  var max=Math.max.apply(null,se.map(function(e){return e[1]}))||1;
-  var sColors={Visited:'#34d399',Contracted:'#60a5fa','In discussion':'#fbbf24',Cancelled:'#f87171','Declined due to Political Conflict':'#fb923c','Declined due to political situation':'#fb923c'};
-  var bars=se.map(function(e){
-    var pct=Math.round(e[1]/max*100);
-    var col=sColors[e[0]]||'#a78bfa';
-    return'<div class="SR"><div class="SL">'+esc(e[0])+'</div><div class="ST"><div class="SF" style="width:'+pct+'%;background:'+col+'">'+e[1]+'</div></div></div>';
+  var sColors={Visited:'#34d399',Contracted:'#60a5fa','To send contract':'#818cf8','Contract sent':'#818cf8','In discussion':'#fbbf24',Cancelled:'#f87171',Paused:'#a78bfa','Declined due to Political Conflict':'#fb923c','Declined due to political situation':'#fb923c',Confirmed:'#34d399',Contacted:'#38bdf8',Interested:'#67e8f9','No Reply':'#6b7280','To Contact':'#9ca3af','Visit in progress':'#2dd4bf',Declined:'#ef4444'};
+  var stTotal=list.length||1;
+  var r=55,ri=38,cx=70,cy=70,circ=2*Math.PI*r;
+  var offset=0;
+  var arcs='';
+  se.forEach(function(e){
+    var frac=e[1]/stTotal;
+    var dashLen=frac*circ;
+    var col=sColors[e[0]]||'#6b7280';
+    arcs+='<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="'+col+'" stroke-width="14" stroke-dasharray="'+dashLen.toFixed(1)+' '+(circ-dashLen).toFixed(1)+'" stroke-dashoffset="'+(-offset).toFixed(1)+'" transform="rotate(-90 '+cx+' '+cy+')"/>';
+    offset+=dashLen;
+  });
+  var donutSvg='<svg width="140" height="140" viewBox="0 0 140 140" style="flex-shrink:0">'+
+    '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" fill="none" stroke="#1e2332" stroke-width="14"/>'+
+    arcs+
+    '<text x="'+cx+'" y="'+(cy-6)+'" text-anchor="middle" fill="#e8ecf4" font-size="22" font-weight="700">'+stTotal+'</text>'+
+    '<text x="'+cx+'" y="'+(cy+10)+'" text-anchor="middle" fill="#5a6278" font-size="10">total</text></svg>';
+
+  var legendRows=se.map(function(e){
+    var col=sColors[e[0]]||'#6b7280';
+    var pct=Math.round(e[1]/stTotal*100);
+    return'<div class="dl-row"><span class="dl-dot" style="background:'+col+'"></span><span class="dl-name">'+esc(e[0])+'</span><span class="dl-count">'+e[1]+'</span><span class="dl-pct">'+pct+'%</span></div>';
   }).join('');
-  var pipe='<div class="CC"><div class="CT"><span class="CDT" style="background:#34d399"></span> Status Pipeline</div><div class="SB">'+bars+'</div></div>';
+
+  var pipe='<div class="CC"><div class="CT"><span class="CDT" style="background:#34d399"></span> Status Pipeline</div><div class="donut-wrap">'+donutSvg+'<div class="donut-legend">'+legendRows+'</div></div></div>';
 
   document.getElementById('charts').innerHTML=mChart+pipe;
 }
