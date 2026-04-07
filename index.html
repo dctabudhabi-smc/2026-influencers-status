@@ -217,7 +217,7 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 <select class="FS" id="sortSel" onchange="applySearch()">
 <option value="f">Sort by Followers</option>
 <option value="emv">Sort by EMV</option>
-<option value="tc">Sort by Cost</option><option value="cr">Sort by Credibility</option>
+<option value="tc">Sort by Cost</option><option value="cr">Sort by Credibility</option><option value="roi">Sort by ROI</option>
 </select>
 <button class="exp-btn" onclick="exportPPT()"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>Export PPT</button>
 </div>
@@ -375,12 +375,18 @@ function applySearch(){
   var list=F;
   if(q)list=list.filter(function(d){return(d.Name+' '+d.Market+' '+d.Platform+' '+d.Segment+' '+d.Campaign+' '+d.IGUser+' '+d.TKUser).toLowerCase().indexOf(q)>-1});
   var sk=document.getElementById('sortSel').value;
-  list.sort(function(a,b){return pn(b[sk==='f'?'Followers':sk==='emv'?'EMV':sk==='cr'?'Cred':'Cost'])-pn(a[sk==='f'?'Followers':sk==='emv'?'EMV':sk==='cr'?'Cred':'Cost'])});
+  if(sk==='roi'){
+    list.sort(function(a,b){var ra=pn(a.Cost)>0?pn(a.EMV)/pn(a.Cost):0;var rb=pn(b.Cost)>0?pn(b.EMV)/pn(b.Cost):0;return rb-ra});
+  }else{
+    list.sort(function(a,b){return pn(b[sk==='f'?'Followers':sk==='emv'?'EMV':sk==='cr'?'Cred':'Cost'])-pn(a[sk==='f'?'Followers':sk==='emv'?'EMV':sk==='cr'?'Cred':'Cost'])});
+  }
   render(list);
 }
 function resetF(){['fM','fS'].forEach(function(id){document.getElementById(id).value=''});['fD1','fD2'].forEach(function(id){document.getElementById(id).value=''});document.querySelectorAll('#fCDrop input').forEach(function(cb){cb.checked=false});onCampChange();document.getElementById('searchBox').value='';history.replaceState(null,'',location.pathname);applyFilters()}
-function syncHash(){var m=document.getElementById('fM').value,camps=getSelectedCampaigns(),s=document.getElementById('fS').value,d1=document.getElementById('fD1').value,d2=document.getElementById('fD2').value;var p=[];if(m)p.push('market='+encodeURIComponent(m));if(camps.length)p.push('campaign='+camps.map(encodeURIComponent).join(','));if(s)p.push('status='+encodeURIComponent(s));if(d1)p.push('from='+d1);if(d2)p.push('to='+d2);history.replaceState(null,'',p.length?'#'+p.join('~'):location.pathname)}
-function readHash(){if(!location.hash)return;try{var raw=decodeURIComponent(location.hash.slice(1)).replace(/[~|]/g,'&');var p=new URLSearchParams(raw);if(p.get('market'))document.getElementById('fM').value=p.get('market');if(p.get('campaign')){var cv=p.get('campaign').split(',');document.querySelectorAll('#fCDrop input').forEach(function(cb){cb.checked=cv.indexOf(cb.value)>-1});onCampChange()}if(p.get('status'))document.getElementById('fS').value=p.get('status');if(p.get('from'))document.getElementById('fD1').value=p.get('from');if(p.get('to'))document.getElementById('fD2').value=p.get('to')}catch(e){}}
+function hashEnc(v){return encodeURIComponent(v).replace(/%23/gi,'_H_').replace(/%20/g,'+')}
+function hashDec(v){return decodeURIComponent(v.replace(/_H_/g,'%23').replace(/\+/g,'%20'))}
+function syncHash(){var m=document.getElementById('fM').value,camps=getSelectedCampaigns(),s=document.getElementById('fS').value,d1=document.getElementById('fD1').value,d2=document.getElementById('fD2').value;var p=[];if(m)p.push('market='+hashEnc(m));if(camps.length)p.push('campaign='+camps.map(hashEnc).join(','));if(s)p.push('status='+hashEnc(s));if(d1)p.push('from='+d1);if(d2)p.push('to='+d2);history.replaceState(null,'',p.length?'#'+p.join('~'):location.pathname)}
+function readHash(){if(!location.hash)return;try{var raw=location.hash.slice(1);var parts=raw.split(/[~|&]/);var map={};parts.forEach(function(p){var eq=p.indexOf('=');if(eq>0)map[p.slice(0,eq)]=p.slice(eq+1)});if(map.market)document.getElementById('fM').value=hashDec(map.market);if(map.campaign){var cv=map.campaign.split(',').map(hashDec);document.querySelectorAll('#fCDrop input').forEach(function(cb){cb.checked=cv.indexOf(cb.value)>-1});onCampChange()}if(map.status)document.getElementById('fS').value=hashDec(map.status);if(map.from)document.getElementById('fD1').value=map.from;if(map.to)document.getElementById('fD2').value=map.to}catch(e){}}
 
 /* Render */
 var RENDERED=[];
@@ -405,7 +411,7 @@ function renderKPIs(list){
   '<div class="KC"><div class="KL">In Discussion</div><div class="KV">'+di+'</div></div>'+
   '<div class="KC"><div class="KL">Total Spend</div><div class="KV">'+fm(sp)+'</div></div>'+
   '<div class="KC"><div class="KL">Forecasted EMV</div><div class="KV">'+fm(em)+'</div></div>'+
-  '<div class="KC"><div class="KL">ROAS</div><div class="KV">'+ro+'x</div></div>';
+  '<div class="KC"><div class="KL">ROI</div><div class="KV">'+ro+'x</div></div>';
 }
 
 var PAL=['#3ecfb4','#4a9eff','#a78bfa','#f59e0b','#f472b6','#22c55e','#fb923c','#ef4444','#67e8f9','#c084fc','#facc15','#34d399','#f87171','#38bdf8','#e879f9','#fca5a5','#86efac','#7dd3fc'];
@@ -474,7 +480,7 @@ function renderTable(list){
     '<td>'+travelPill(d.TravelDates)+'</td>'+
     '</tr>';
   }
-  document.getElementById('deskTbl').innerHTML='<div class="TW"><div class="TS"><table><thead><tr><th>Name</th><th>Market</th><th>Campaign</th><th>Status</th><th>Tier</th><th class="nc">Followers</th><th class="nc">Talent Cost</th><th class="nc">Travel Cost</th><th>Credibility</th><th class="nc">Proj. EMV</th><th>ROAS</th><th>Visit</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
+  document.getElementById('deskTbl').innerHTML='<div class="TW"><div class="TS"><table><thead><tr><th>Name</th><th>Market</th><th>Campaign</th><th>Status</th><th>Tier</th><th class="nc">Followers</th><th class="nc">Talent Cost</th><th class="nc">Travel Cost</th><th>Credibility</th><th class="nc">Proj. EMV</th><th>ROI</th><th>Visit</th></tr></thead><tbody>'+rows+'</tbody></table></div></div>';
 }
 
 function renderCards(list){
@@ -486,7 +492,7 @@ function renderCards(list){
     var rc=roas!=='--'?(parseFloat(roas)>=5?'#34d399':parseFloat(roas)>=2?'#fbbf24':'#f87171'):'#5a6278';
     html+='<div class="mc">'+
     '<div class="mc-top">'+mkAv(d.Name,d.CampaygnId,true)+'<div class="mc-nwrap"><div class="mc-name">'+esc(d.Name)+'</div>'+mkSoc(d,true)+'</div>'+stBadge(d.Status)+'</div>'+
-    '<div class="mc-summary"><div class="mc-stat"><div class="mc-stat-val">'+(fol?fn(fol):'--')+'</div><div class="mc-stat-lbl">Followers</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#a78bfa">'+fm(d.Cost)+'</div><div class="mc-stat-lbl">Talent Cost</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#8b5cf6">'+fm(d.ProvCost)+'</div><div class="mc-stat-lbl">Travel Cost</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:'+rc+'">'+roas+(roas!=='--'?'x':'')+'</div><div class="mc-stat-lbl">ROAS</div></div></div>'+
+    '<div class="mc-summary"><div class="mc-stat"><div class="mc-stat-val">'+(fol?fn(fol):'--')+'</div><div class="mc-stat-lbl">Followers</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#a78bfa">'+fm(d.Cost)+'</div><div class="mc-stat-lbl">Talent Cost</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:#8b5cf6">'+fm(d.ProvCost)+'</div><div class="mc-stat-lbl">Travel Cost</div></div><div class="mc-stat"><div class="mc-stat-val" style="color:'+rc+'">'+roas+(roas!=='--'?'x':'')+'</div><div class="mc-stat-lbl">ROI</div></div></div>'+
     '<div class="mc-detail"><div class="mc-grid">'+
     '<div class="mc-item"><div class="mc-label">Campaign</div><div class="mc-val">'+esc(d.Campaign||'--')+'</div></div>'+
     '<div class="mc-item"><div class="mc-label">Market</div><div class="mc-val">'+flag(d.Market)+' '+esc(d.Market)+'</div></div>'+
