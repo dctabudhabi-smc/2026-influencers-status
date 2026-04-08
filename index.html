@@ -45,9 +45,13 @@ a{color:#3ecfb4;text-decoration:none}
 .fg::after{content:'\25BE';position:absolute;right:10px;bottom:10px;color:#5a6278;font-size:10px;pointer-events:none}
 .fg.fg-date::after{display:none}
 .fg.fg-ms::after{display:none}
-.fg input[type="date"]{width:100%;background:#161a24 !important;color:#e8ecf4 !important;border:1px solid #252b3b;border-radius:6px;padding:7px 10px;font-size:16px;font-family:inherit;outline:none;transition:border-color .2s;color-scheme:dark;-webkit-appearance:none;-moz-appearance:none;appearance:none}
+.fg input[type="date"]{width:100%;background:#161a24 !important;color:#e8ecf4 !important;border:1px solid #252b3b;border-radius:6px;padding:7px 10px;font-size:12px;font-family:inherit;outline:none;transition:border-color .2s;color-scheme:dark;-webkit-appearance:none;-moz-appearance:none;appearance:none}
 .fg input[type="date"]::-webkit-date-and-time-value{text-align:left;color:#e8ecf4}
-.fg input[type="date"]::-webkit-calendar-picker-indicator{filter:invert(1);opacity:0.5;cursor:pointer}
+.fg input[type="date"]::-webkit-calendar-picker-indicator{display:none;-webkit-appearance:none}
+.fg input[type="date"]::-webkit-datetime-edit{color:#e8ecf4}
+.fg input[type="date"]::-webkit-datetime-edit-fields-wrapper{color:#e8ecf4}
+.fg input[type="date"]::-webkit-datetime-edit-text{color:#5a6278}
+.fg input[type="date"]::-webkit-datetime-edit-month-field,.fg input[type="date"]::-webkit-datetime-edit-day-field,.fg input[type="date"]::-webkit-datetime-edit-year-field{color:#e8ecf4}
 .date-row{display:flex;gap:6px}
 .date-row input{flex:1;min-width:0}
 .frst{align-self:flex-end;background:#161a24;color:#8891a5;border:1px solid #252b3b;border-radius:6px;padding:7px 14px;font-size:12px;font-family:inherit;cursor:pointer;transition:all .2s;white-space:nowrap}
@@ -195,7 +199,8 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 .flt{padding:10px 16px;justify-content:flex-start}.fg{min-width:0;max-width:none;flex:1 1 calc(50% - 5px)}
 .FI{width:100%}.TC{flex-direction:column;align-items:flex-start}.FL{width:100%}
 .mc-grid{grid-template-columns:1fr 1fr 1fr}
-
+.fg input[type="date"]{font-size:16px;padding:10px 10px;min-height:42px;color:#e8ecf4 !important;background:#161a24 !important}
+.fg select,.ms-btn{font-size:14px;padding:10px 28px 10px 10px;min-height:42px}
 }
 @media(max-width:480px){.fg{flex:1 1 100%}.mc-grid{grid-template-columns:1fr 1fr}.KG{grid-template-columns:1fr 1fr}.donut-wrap{flex-direction:column;align-items:center}}
 </style>
@@ -221,7 +226,7 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 <select class="FS" id="sortSel" onchange="applySearch()">
 <option value="f">Sort by Followers</option>
 <option value="emv">Sort by EMV</option>
-<option value="tc">Sort by Cost</option><option value="cr">Sort by Credibility</option><option value="roi">Sort by ROI</option>
+<option value="tc">Sort by Cost</option><option value="cr">Sort by Credibility</option><option value="roi">Sort by ROI</option><option value="st">Sort by Status</option>
 </select>
 <button class="exp-btn" onclick="exportPPT('costs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PPT with costs</button>
 <button class="exp-btn exp-alt" onclick="exportPPT('nocosts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PPT w/o costs</button>
@@ -391,6 +396,9 @@ function applySearch(){
   var sk=document.getElementById('sortSel').value;
   if(sk==='roi'){
     list.sort(function(a,b){var ra=pn(a.Cost)>0?pn(a.EMV)/pn(a.Cost):0;var rb=pn(b.Cost)>0?pn(b.EMV)/pn(b.Cost):0;return rb-ra});
+  }else if(sk==='st'){
+    var stVol={};list.forEach(function(d){var s=d.Status||'Unknown';stVol[s]=(stVol[s]||0)+1});
+    list.sort(function(a,b){var va=stVol[a.Status||'Unknown']||0,vb=stVol[b.Status||'Unknown']||0;return vb-va||(a.Status||'').localeCompare(b.Status||'')});
   }else{
     list.sort(function(a,b){return pn(b[sk==='f'?'Followers':sk==='emv'?'EMV':sk==='cr'?'Cred':'Cost'])-pn(a[sk==='f'?'Followers':sk==='emv'?'EMV':sk==='cr'?'Cred':'Cost'])});
   }
