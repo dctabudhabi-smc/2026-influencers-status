@@ -109,12 +109,11 @@ a{color:#3ecfb4;text-decoration:none}
 .FI{background:#161a24;border:1px solid #252b3b;color:#e8ecf4;padding:7px 12px;border-radius:6px;font-size:12px;outline:none;font-family:inherit;width:200px}
 .FI:focus{border-color:#3ecfb4}.FI::placeholder{color:#5a6278}
 .FS{background:#161a24;border:1px solid #252b3b;color:#e8ecf4;padding:7px 10px;border-radius:6px;font-size:12px;font-family:inherit;cursor:pointer}
-.exp-btn{background:linear-gradient(135deg,#3ecfb4,#2a9880);color:#0a0c10;border:none;border-radius:6px;padding:7px 14px;font-size:12px;font-family:inherit;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:opacity .2s;white-space:nowrap}
-.exp-btn:hover{opacity:.85}
-.exp-btn svg{width:14px;height:14px}
-.exp-btn{background:#161a24;border:1px solid #252b3b;color:#e8ecf4;padding:7px 14px;border-radius:6px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap}
+.exp-btn{background:#161a24;border:1px solid #252b3b;color:#e8ecf4;padding:7px 14px;border-radius:6px;font-size:12px;font-family:inherit;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;white-space:nowrap;font-weight:500}
 .exp-btn:hover{border-color:#3ecfb4;color:#3ecfb4}
 .exp-btn svg{width:14px;height:14px}
+.exp-alt{background:#7c3aed;border-color:#7c3aed;color:#fff}
+.exp-alt:hover{background:#6d28d9;border-color:#6d28d9;color:#fff;opacity:.9}
 
 /* Desktop table */
 .TW{background:#161a24;border:1px solid #252b3b;border-radius:10px;overflow:hidden}
@@ -225,7 +224,7 @@ tr:hover td{background:#1c2130;color:#e8ecf4}
 <option value="tc">Sort by Cost</option><option value="cr">Sort by Credibility</option><option value="roi">Sort by ROI</option>
 </select>
 <button class="exp-btn" onclick="exportPPT('costs')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PPT with costs</button>
-<button class="exp-btn" onclick="exportPPT('nocosts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PPT w/o costs</button>
+<button class="exp-btn exp-alt" onclick="exportPPT('nocosts')"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>PPT w/o costs</button>
 </div>
 </div>
 <div class="desk-tbl" id="deskTbl"></div>
@@ -341,16 +340,25 @@ function buildFilters(){
   var ms=uniq('Market'),cs=uniq('Campaign'),ss=uniq('Status');
   bar.innerHTML='<div class="fg"><label>Market</label><select id="fM"><option value="">All Markets ('+ms.length+')</option>'+ms.map(function(m){return'<option value="'+esc(m)+'">'+flag(m)+' '+esc(m)+'</option>'}).join('')+'</select></div>'+
   '<div class="fg fg-ms"><label>Campaign</label><div class="ms-wrap"><div class="ms-btn" id="fCBtn" onclick="toggleMsDrop()">All Campaigns ('+cs.length+')</div><div class="ms-drop" id="fCDrop">'+cs.map(function(c){return'<label class="ms-opt"><input type="checkbox" value="'+esc(c)+'" onchange="onCampChange()"><span>'+esc(c)+'</span></label>'}).join('')+'</div></div></div>'+
-  '<div class="fg"><label>Status</label><select id="fS"><option value="">All Statuses</option>'+ss.map(function(s){return'<option>'+esc(s)+'</option>'}).join('')+'</select></div>'+
+  '<div class="fg fg-ms"><label>Status</label><div class="ms-wrap"><div class="ms-btn" id="fSBtn" onclick="toggleMsDrop2()">All Statuses</div><div class="ms-drop" id="fSDrop">'+ss.map(function(s){return'<label class="ms-opt"><input type="checkbox" value="'+esc(s)+'" onchange="onStatChange()"><span>'+esc(s)+'</span></label>'}).join('')+'</div></div></div>'+
   '<div class="fg fg-date"><label>Visit Dates</label><div class="date-row"><input type="date" id="fD1" placeholder="From"><input type="date" id="fD2" placeholder="To"></div></div>'+
   '<button class="frst" onclick="resetF()">Reset</button>';
-  ['fM','fS'].forEach(function(id){document.getElementById(id).onchange=function(){applyFilters();syncHash()}});
+  ['fM'].forEach(function(id){document.getElementById(id).onchange=function(){applyFilters();syncHash()}});
   ['fD1','fD2'].forEach(function(id){document.getElementById(id).onchange=function(){applyFilters();syncHash()}});
-  document.addEventListener('click',function(e){var w=document.querySelector('.ms-wrap');if(w&&!w.contains(e.target))document.getElementById('fCDrop').classList.remove('open')});
+  document.addEventListener('click',function(e){document.querySelectorAll('.ms-wrap').forEach(function(w){if(!w.contains(e.target)){var d=w.querySelector('.ms-drop');if(d)d.classList.remove('open')}})});
   readHash();
 }
 function toggleMsDrop(){document.getElementById('fCDrop').classList.toggle('open')}
+function toggleMsDrop2(){document.getElementById('fSDrop').classList.toggle('open')}
 function getSelectedCampaigns(){var checks=document.querySelectorAll('#fCDrop input:checked');var vals=[];checks.forEach(function(cb){vals.push(cb.value)});return vals}
+function getSelectedStatuses(){var checks=document.querySelectorAll('#fSDrop input:checked');var vals=[];checks.forEach(function(cb){vals.push(cb.value)});return vals}
+function onStatChange(){
+  var sel=getSelectedStatuses();var btn=document.getElementById('fSBtn');
+  if(sel.length===0)btn.innerHTML='All Statuses';
+  else if(sel.length===1)btn.innerHTML=esc(sel[0]);
+  else btn.innerHTML=sel.length+' statuses<span class="ms-count">'+sel.length+'</span>';
+  applyFilters();syncHash();
+}
 function onCampChange(){
   var sel=getSelectedCampaigns();var btn=document.getElementById('fCBtn');
   if(sel.length===0)btn.innerHTML='All Campaigns';
@@ -359,12 +367,12 @@ function onCampChange(){
   applyFilters();syncHash();
 }
 function applyFilters(){
-  var m=document.getElementById('fM').value,camps=getSelectedCampaigns(),s=document.getElementById('fS').value;
+  var m=document.getElementById('fM').value,camps=getSelectedCampaigns(),stats=getSelectedStatuses();
   var d1=document.getElementById('fD1').value,d2=document.getElementById('fD2').value;
   F=D.filter(function(d){
     if(m&&d.Market!==m)return false;
     if(camps.length>0&&camps.indexOf(d.Campaign)===-1)return false;
-    if(s&&d.Status!==s)return false;
+    if(stats.length>0&&stats.indexOf(d.Status)===-1)return false;
     if(d1||d2){
       if(!d.TravelDates)return false;
       var parts=d.TravelDates.split(' - ');
@@ -388,12 +396,12 @@ function applySearch(){
   }
   render(list);
 }
-function resetF(){['fM','fS'].forEach(function(id){document.getElementById(id).value=''});['fD1','fD2'].forEach(function(id){document.getElementById(id).value=''});document.querySelectorAll('#fCDrop input').forEach(function(cb){cb.checked=false});onCampChange();document.getElementById('searchBox').value='';history.replaceState(null,'',location.pathname);applyFilters()}
+function resetF(){['fM'].forEach(function(id){document.getElementById(id).value=''});['fD1','fD2'].forEach(function(id){document.getElementById(id).value=''});document.querySelectorAll('#fCDrop input,#fSDrop input').forEach(function(cb){cb.checked=false});onCampChange();onStatChange();document.getElementById('searchBox').value='';history.replaceState(null,'',location.pathname);applyFilters()}
 var _readingHash=false;
 function hashEnc(v){return encodeURIComponent(v).replace(/%23/gi,'_H_').replace(/%20/g,'+')}
 function hashDec(v){return decodeURIComponent(v.replace(/_H_/g,'%23').replace(/\+/g,'%20'))}
-function syncHash(){if(_readingHash)return;var m=document.getElementById('fM').value,camps=getSelectedCampaigns(),s=document.getElementById('fS').value,d1=document.getElementById('fD1').value,d2=document.getElementById('fD2').value;var p=[];if(m)p.push('market='+hashEnc(m));if(camps.length)p.push('campaign='+camps.map(hashEnc).join(','));if(s)p.push('status='+hashEnc(s));if(d1)p.push('from='+d1);if(d2)p.push('to='+d2);history.replaceState(null,'',p.length?'#'+p.join('~'):location.pathname)}
-function readHash(){if(!location.hash)return;_readingHash=true;try{var raw=location.hash.slice(1);var parts=raw.split(/[~|&]/);var map={};parts.forEach(function(p){var eq=p.indexOf('=');if(eq>0)map[p.slice(0,eq)]=p.slice(eq+1)});if(map.market)document.getElementById('fM').value=hashDec(map.market);if(map.campaign){var cv=map.campaign.split(',').map(hashDec);document.querySelectorAll('#fCDrop input').forEach(function(cb){cb.checked=cv.indexOf(cb.value)>-1});onCampChange()}if(map.status)document.getElementById('fS').value=hashDec(map.status);if(map.from)document.getElementById('fD1').value=map.from;if(map.to)document.getElementById('fD2').value=map.to}catch(e){}finally{_readingHash=false}}
+function syncHash(){if(_readingHash)return;var m=document.getElementById('fM').value,camps=getSelectedCampaigns(),stats=getSelectedStatuses(),d1=document.getElementById('fD1').value,d2=document.getElementById('fD2').value;var p=[];if(m)p.push('market='+hashEnc(m));if(camps.length)p.push('campaign='+camps.map(hashEnc).join(','));if(stats.length)p.push('status='+stats.map(hashEnc).join(','));if(d1)p.push('from='+d1);if(d2)p.push('to='+d2);history.replaceState(null,'',p.length?'#'+p.join('~'):location.pathname)}
+function readHash(){if(!location.hash)return;_readingHash=true;try{var raw=location.hash.slice(1);var parts=raw.split(/[~|&]/);var map={};parts.forEach(function(p){var eq=p.indexOf('=');if(eq>0)map[p.slice(0,eq)]=p.slice(eq+1)});if(map.market)document.getElementById('fM').value=hashDec(map.market);if(map.campaign){var cv=map.campaign.split(',').map(hashDec);document.querySelectorAll('#fCDrop input').forEach(function(cb){cb.checked=cv.indexOf(cb.value)>-1});onCampChange()}if(map.status){var sv=map.status.split(',').map(hashDec);document.querySelectorAll('#fSDrop input').forEach(function(cb){cb.checked=sv.indexOf(cb.value)>-1});onStatChange()}if(map.from)document.getElementById('fD1').value=map.from;if(map.to)document.getElementById('fD2').value=map.to}catch(e){}finally{_readingHash=false}}
 
 /* Render */
 var RENDERED=[];
@@ -872,13 +880,13 @@ async function exportPPT(mode){
       }
 
       // Name
-      sl.addText(d.Name,{x:cx+1.0,y:cy+0.2,w:cardW-1.8,h:0.3,fontSize:13,fontFace:FN,bold:true,color:TX,valign:'middle'});
+      sl.addText(d.Name,{x:cx+1.0,y:cy+0.2,w:cardW-1.8,h:0.3,fontSize:13,fontFace:FN,bold:true,color:TX,valign:'middle',margin:0});
 
-      // Status pill (under name, where market used to be)
+      // Status pill (under name)
       var stL=d.Status||'--';
       var stCol=stL.toLowerCase().indexOf('visited')>-1?GN:stL.toLowerCase().indexOf('contract')>-1?BL:stL.toLowerCase().indexOf('discussion')>-1?AM:stL.toLowerCase().indexOf('cancel')>-1?RD:stL.toLowerCase().indexOf('declined')>-1?RD:PU;
-      sl.addShape(pptx.shapes.ROUNDED_RECTANGLE,{x:cx+1.0,y:cy+0.5,w:stL.length*0.06+0.15,h:0.2,fill:{color:SF2},line:{color:stCol,width:0.5},rectRadius:0.07});
-      sl.addText(stL,{x:cx+1.0,y:cy+0.5,w:stL.length*0.06+0.15,h:0.2,fontSize:7,fontFace:FN,bold:true,color:stCol,align:'center',valign:'middle'});
+      var stW=stL.length*0.06+0.2;
+      sl.addText(stL,{x:cx+1.0,y:cy+0.5,w:stW,h:0.2,fontSize:7,fontFace:FN,bold:true,color:stCol,align:'center',valign:'middle',margin:0,shape:pptx.shapes.ROUNDED_RECTANGLE,fill:{color:SF2},line:{color:stCol,width:0.5},rectRadius:0.07});
 
       // Social platform icons - positioned under Tier (top right)
       var socials=[];
