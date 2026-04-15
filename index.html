@@ -274,7 +274,7 @@ function parseSheet(text){
     var plRaw=(obj['Main Platform Link (CH)']||''),plUrl=plRaw.split(' - ').pop().trim();
     var igM=plUrl.match(/instagram\.com\/([^\/?]+)/i),igu=igM?igM[1]:'';
     var tkM=plUrl.match(/tiktok\.com\/@?([^\/?]+)/i),tku=tkM?tkM[1]:'';
-    out.push({Name:obj.Name,Market:obj.Market,Campaign:obj.Campaign||'',Tier:obj.Tier||'',Segment:obj.Segment||'',Status:obj.Status||'',TravelDates:obj['Travel Dates']||'',Platform:obj['Primary Platform']||'',Followers:obj['Total followers']||'',Cost:obj['Talent Cost']||'',ProvCost:obj['Provision Travel cost']||'',EMV:obj['Forecasted EMV $']||'',Cred:obj['% real followers']||'',CampaygnId:cpId,IGUser:igu,TKUser:tku,ProfileLink:plUrl,ER:obj['ER %']||'',MR:obj['Market reach %']||'',SheetROAS:obj['ROAS']||''});
+    out.push({Name:obj.Name,Market:obj.Market,Campaign:obj.Campaign||'',Tier:obj.Tier||'',Segment:obj.Segment||'',Status:obj.Status||'',TravelDates:obj['Travel Dates']||'',Platform:obj['Primary Platform']||'',Followers:obj['Total followers']||'',Cost:obj['Talent Cost']||'',ProvCost:obj['Provision Travel cost']||'',EMV:obj['Forecasted EMV $']||'',Cred:obj['% real followers']||'',CampaygnId:cpId,IGUser:igu,TKUser:tku,ProfileLink:plUrl,ER:obj['ER %']||'',MR:obj['Market reach %']||'',SheetROAS:obj['ROAS x (Numbers)']||''});
   }
   return out.length?out:null;
 }
@@ -588,7 +588,7 @@ function fetchJSONP(){
             if(lb==='Name')c.n=i;else if(lb==='Market')c.m=i;else if(lb==='Campaign')c.c=i;else if(lb==='Tier')c.t=i;
             else if(lb==='Segment')c.sg=i;else if(lb==='Status')c.s=i;else if(lb==='Travel Dates')c.td=i;
             else if(lb==='Primary Platform')c.pp=i;else if(lb==='Total followers')c.f=i;else if(lb==='Talent Cost')c.tc=i;
-            else if(lb==='Forecasted EMV $')c.emv=i;else if(lb==='% real followers')c.cr=i;else if(lb==='Provision Travel cost')c.ptc=i;else if(lb==='ER %')c.er=i;else if(lb==='Market reach %')c.mr=i;else if(lb==='ROAS (Numbers)')c.sr=i;else if(lb==='Provision Travel Cost $(Number)')c.spc=i;
+            else if(lb==='Forecasted EMV $')c.emv=i;else if(lb==='% real followers')c.cr=i;else if(lb==='Provision Travel cost')c.ptc=i;else if(lb==='ER %')c.er=i;else if(lb==='Market reach %')c.mr=i;else if(lb==='ROAS x (Numbers)')c.sr=i;else if(lb==='Provision Travel Cost $(Number)')c.spc=i;
             else if(lb==='Campaygn Public Link')c.cp=i;else if(lb==='Main Platform Link (CH)')c.pl=i;
           }
           var gv=function(row,idx){if(idx===undefined||!row.c||!row.c[idx])return'';var cl=row.c[idx];return cl.f||(cl.v!=null?String(cl.v):'')};
